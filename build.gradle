@@ -1,0 +1,45 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE")
+    }
+}
+
+/*
+plugins {
+  id "info.robotbrain.lombok" version "1.0.2"
+}
+*/
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+
+jar {
+    baseName = 'gs-messaging-rabbitmq'
+    version =  '0.1.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-amqp")
+    testCompile("junit:junit")
+
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.4.+'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.4.+'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.4.+'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
+}
+
