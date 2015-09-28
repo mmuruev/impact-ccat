@@ -87,7 +87,7 @@ public class Money {
     }
 
     public BigDecimal getAmount() {
-        return amount;
+        return amount.stripTrailingZeros();
     }
 
     public Currency getCurrency() {
