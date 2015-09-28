@@ -56,7 +56,7 @@ public class Interest {
     public Money getFinalInterest(){
         Money finalInterest = new Money();
         for(int day= FIRST_INTEREST_DAY; day< days ; day++){
-           finalInterest.add(getAmountForDay(day));
+           finalInterest = finalInterest.add(getAmountForDay(day));
         }
         return finalInterest;
     }
