@@ -34,4 +34,12 @@ public class Euro implements Currency {
     public String getDisplayName() {
         return NAME;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object currency) {
+        return currency instanceof Euro;
+    }
 }
