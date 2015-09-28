@@ -1,6 +1,7 @@
 package impact.cat.calculation;
 
 import impact.cat.calculation.bag.Money;
+import impact.cat.dao.LoanCalculations;
 
 import java.math.BigDecimal;
 
@@ -51,6 +52,19 @@ public class Interest {
 
     public void setSum(Money sum) {
         this.sum = sum;
+    }
+
+    /**
+     *
+     * @return - all calculations for loan
+     */
+    public LoanCalculations getLoanCalculations(){
+        return new LoanCalculations(
+                getSum().getAmount(),
+                getDays(),
+                getFinalInterest().getAmount(),
+                getTotalSum().getAmount()
+        );
     }
 
     public Money getFinalInterest(){

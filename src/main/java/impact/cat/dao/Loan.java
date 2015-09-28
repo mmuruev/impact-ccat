@@ -1,6 +1,9 @@
 package impact.cat.dao;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import impact.cat.json.LoanDeserializer;
+
 import java.math.BigDecimal;
 
 /**
@@ -9,7 +12,7 @@ import java.math.BigDecimal;
  * Date: 21.09.15
  * Time: 22:18
  */
-
+@JsonDeserialize(using = LoanDeserializer.class)
 public class Loan {
 
     private BigDecimal sum;

@@ -1,6 +1,8 @@
 package impact.cat.dao;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import impact.cat.calculation.Interest;
+import impact.cat.json.LoanCalculationsSerializer;
 
 import java.math.BigDecimal;
 
@@ -10,6 +12,7 @@ import java.math.BigDecimal;
  * Date: 21.09.15
  * Time: 22:21
  */
+@JsonSerialize(using = LoanCalculationsSerializer.class)
 public class LoanCalculations extends Loan {
 
     /**
@@ -42,4 +45,15 @@ public class LoanCalculations extends Loan {
         this.token = token;
     }
 
+    public BigDecimal getInterest() {
+        return interest;
+    }
+
+    public BigDecimal getTotalSum() {
+        return totalSum;
+    }
+
+    public String getToken() {
+        return token;
+    }
 }
