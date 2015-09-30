@@ -2,6 +2,7 @@ package impact.cat.calculation;
 
 import impact.cat.calculation.bag.Money;
 import impact.cat.dao.LoanCalculations;
+import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
 
@@ -31,11 +32,34 @@ public class Interest {
 
     private int days;
 
+    static final Logger logger = Logger.getLogger(Interest.class);
+
     public static int FIRST_INTEREST_DAY = 1;
 
+    public final String NEGATIVE_SUM_VALUE_ERROR_MESSAGE = "Sum cannot be negative. Value: ";
+
+    public final String NEGATIVE_DAYS_ERROR_MESSAGE = "Days cannot be negative. Value: ";
+
+    /**
+     *  Formatted string for values
+     *  1. value type
+     *  2. value
+     */
+    public final String VALUE = "<%s>: %s has been given";
+
+    /**
+     * Formatted string for calculated values
+     * 1. value type
+     * 2. value
+     */
+    public final String CALCULATED_VALUE = "<%s>: %s has been calculated";
+
     public Interest(Money sum, int days) {
+        checkPositive(days);
+        checkPositive(sum.getAmount());
         this.sum = sum;
         this.days = days;
+
     }
 
     public Money getSum() {
@@ -47,10 +71,12 @@ public class Interest {
     }
 
     public void setDays(int days) {
+        checkPositive(days);
         this.days = days;
     }
 
     public void setSum(Money sum) {
+        checkPositive(sum.getAmount());
         this.sum = sum;
     }
 
@@ -72,11 +98,14 @@ public class Interest {
         for(int day = FIRST_INTEREST_DAY; day <= days ; day++){
            finalInterest = finalInterest.add(getAmountForDay(day));
         }
+        logger.debug(String.format(CALCULATED_VALUE,"final_interest",finalInterest.getAmount()));
         return finalInterest;
     }
 
     public Money getTotalSum(){
-       return sum.add(getFinalInterest());
+       Money finalInterest =  sum.add(getFinalInterest());
+       logger.debug(String.format(CALCULATED_VALUE, "total_sum",finalInterest));
+       return finalInterest;
     }
 
     private Money getAmountForDay(int day){
@@ -114,5 +143,20 @@ public class Interest {
      */
     private boolean isDividable(int value, int divider){
         return value % divider == 0;
+    }
+
+    private void checkPositive(int value){
+        if(value < 0){
+            logger.error(NEGATIVE_DAYS_ERROR_MESSAGE + value);
+            throw new IllegalArgumentException(NEGATIVE_DAYS_ERROR_MESSAGE + value);
+        }
+        logger.debug(String.format(VALUE, "days", value));
+    }
+    private void checkPositive(BigDecimal value){
+        if(value.compareTo(BigDecimal.ZERO) == -1 ){
+            logger.error(NEGATIVE_SUM_VALUE_ERROR_MESSAGE + value);
+            throw new IllegalArgumentException(NEGATIVE_SUM_VALUE_ERROR_MESSAGE + value);
+        }
+        logger.debug(String.format(VALUE,"sum",value));
     }
 }
