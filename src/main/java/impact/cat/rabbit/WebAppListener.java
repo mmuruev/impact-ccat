@@ -29,8 +29,6 @@ public class WebAppListener {
          System.out.println("WebAppListener2: Message Received <Days:" + message.getDays() + " Sum:"+ message.getSum()+">");
 
         Interest interest = new Interest(new Money(message.getSum()), message.getDays());
-        interest.getTotalSum();
-
         rabbitTemplate.convertAndSend(interest.getLoanCalculations());
 
 
