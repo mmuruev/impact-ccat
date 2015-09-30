@@ -12,7 +12,6 @@ import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.amqp.support.converter.DefaultClassMapper;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.amqp.support.converter.JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -59,23 +58,19 @@ public class RabbitConfig {
         return new MyJarQueue(BROADCAST_INTEREST_QUEUE);
     }
 
-/*
     @Bean
     public Queue solvedQueue() {
         return new MyJarQueue(BROADCAST_SOLVED_QUEUE);
     }
-*/
 
     @Bean
     public RabbitTemplate rabbitTemplate() {
-        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
-        return rabbitTemplate;
+        return new RabbitTemplate(connectionFactory());
     }
 
     @Bean
     public DirectExchange interestExchange() {
-        DirectExchange exchange = new DirectExchange("");
-        return exchange;
+        return new DirectExchange("");
     }
 
     @Bean
@@ -83,12 +78,10 @@ public class RabbitConfig {
         return BindingBuilder.bind(interestQueue()).to(interestExchange()).with(BROADCAST_INTEREST_QUEUE);
     }
 
-/*
     @Bean
     public Binding solvedBinding() {
         return BindingBuilder.bind(solvedQueue()).to(interestExchange()).with(BROADCAST_SOLVED_QUEUE);
     }
-*/
 
     @Bean
     SimpleMessageListenerContainer persistenceListenerContainer(ConnectionFactory connectionFactory,
@@ -96,8 +89,8 @@ public class RabbitConfig {
                                                                 MessageConverter messageConverter) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.setQueues(interestQueue()/*, solvedQueue()*/);
-        listenerAdapter.setMessageConverter(messageConverter);
+        container.setQueues(solvedQueue());
+       // listenerAdapter.setMessageConverter(messageConverter);
         container.setMessageListener(listenerAdapter);
         return container;
     }
@@ -109,12 +102,11 @@ public class RabbitConfig {
 
     @Bean
     SimpleMessageListenerContainer webAppListenerContainer(ConnectionFactory connectionFactory,
-                                                           @Qualifier("webAppListenerAdapter") MessageListenerAdapter listenerAdapter,
-                                                           MessageConverter messageConverter) {
+                                                           @Qualifier("webAppListenerAdapter") MessageListenerAdapter listenerAdapter, MessageConverter messageConverter) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.setQueues(interestQueue()/*, solvedQueue()*/);
-        listenerAdapter.setMessageConverter( new Jackson2JsonMessageConverter());
+        container.setQueues(interestQueue());
+        listenerAdapter.setMessageConverter(messageConverter);
         container.setMessageListener(listenerAdapter);
         return container;
     }
@@ -135,26 +127,26 @@ public class RabbitConfig {
     }
 
 
-/*    @Bean
+    @Bean
     public DefaultClassMapper typeMapper() {
         DefaultClassMapper typeMapper = new DefaultClassMapper();
-        Map<String, Class<Loan>> idClassMapping = new HashMap<String, Class<Loan>>();
-        //idClassMapping.put("range", Loan.class);
-      //  typeMapper.setIdClassMapping(idClassMapping);
-        //typeMapper.setDefaultType(Loan.class);
+        typeMapper.setDefaultType(Loan.class);
         return typeMapper;
-    }*/
+    }
 
-/*    @Bean
+    @Bean
+    public MessageConverter jsonMessageConverter(DefaultClassMapper defaultClassMapper) {
+        Jackson2JsonMessageConverter jsonMessageConverter = new Jackson2JsonMessageConverter();
+        jsonMessageConverter.setClassMapper(defaultClassMapper);
+        return jsonMessageConverter;
+    }
+
+    /*    @Bean
     	public MessageConverter messageConverter(DefaultClassMapper defaultClassMapper){
     		JsonMessageConverter jsonMessageConverter = new JsonMessageConverter();
     		jsonMessageConverter.setClassMapper(defaultClassMapper);
     		return jsonMessageConverter;
     	}*/
 
-    @Bean
-    public MessageConverter jsonMessageConverter() {
-        return new Jackson2JsonMessageConverter();
-    }
 
 }
