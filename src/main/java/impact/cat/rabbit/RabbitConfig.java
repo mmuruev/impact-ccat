@@ -1,7 +1,8 @@
 package impact.cat.rabbit;
 
 import impact.cat.dao.Loan;
-import impact.cat.queue.MyJarQueue;
+import impact.cat.queue.MyJarInterestQueue;
+import impact.cat.queue.MyJarSolvedInterestQueue;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -16,9 +17,6 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -55,12 +53,12 @@ public class RabbitConfig {
 
     @Bean
     public Queue interestQueue() {
-        return new MyJarQueue(BROADCAST_INTEREST_QUEUE);
+        return new MyJarInterestQueue(BROADCAST_INTEREST_QUEUE);
     }
 
     @Bean
     public Queue solvedQueue() {
-        return new MyJarQueue(BROADCAST_SOLVED_QUEUE);
+        return new MyJarSolvedInterestQueue(BROADCAST_SOLVED_QUEUE);
     }
 
     @Bean
@@ -90,7 +88,7 @@ public class RabbitConfig {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.setQueues(solvedQueue());
-       // listenerAdapter.setMessageConverter(messageConverter);
+        listenerAdapter.setMessageConverter(new Jackson2JsonMessageConverter());
         container.setMessageListener(listenerAdapter);
         return container;
     }

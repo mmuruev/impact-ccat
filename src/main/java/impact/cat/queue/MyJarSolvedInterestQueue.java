@@ -3,20 +3,17 @@ package impact.cat.queue;
 import org.springframework.amqp.core.Queue;
 
 /**
- * Created with IntelliJ IDEA.
- * User: mf
- * Date: 22.09.15
- * Time: 20:27
+ * Created by maksim on 30/09/15.
  */
-public class MyJarQueue extends Queue {
+public class MyJarSolvedInterestQueue extends Queue {
 
     /**
      * The queue is durable, non-exclusive and non auto-delete.
      *
      * @param name the name of the queue.
      */
-    public MyJarQueue(String name) {
-        super(name,false,false,true);
+    public MyJarSolvedInterestQueue(String name) {
+        super(name,true,false,false);
     }
 
 }
