@@ -16,6 +16,24 @@ public class InterestTest {
 
     private Interest interest;
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testNegativeDayOnSetter() throws Exception {
+        interest.setDays(-1);
+    }
+    @Test(expected = IllegalArgumentException.class)
+    public void testNegativeSumOnSetter() throws Exception {
+        interest.setSum(new Money(new BigDecimal("-1")));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNegativeDayOnConstructor() throws Exception {
+        new Interest(new Money(new BigDecimal("123")), -1);
+    }
+    @Test(expected = IllegalArgumentException.class)
+    public void testNegativeSumOnConstructor() throws Exception {
+        new Interest(new Money(new BigDecimal("-1")), 5);
+    }
+
     @Test
     public void testGetFinalInterestForOneDay() throws Exception {
         interest.setDays(1);
