@@ -31,12 +31,12 @@ public class LoanDeserializer extends JsonDeserializer<Loan> {
     public Loan deserialize(JsonParser jp, DeserializationContext context) throws IOException {
         try{
             JsonNode node = jp.getCodec().readTree(jp);
-            int days = node.get(DAYS_JSON_FIELD).asInt();
+            BigDecimal days = node.get(DAYS_JSON_FIELD).decimalValue();
             BigDecimal sum = node.get(SUM_JSON_FIELD).decimalValue();
             return new Loan(sum, days);
         } catch (NullPointerException|IOException e){
            logger.error("Invalid JSON impossible to decode. " + e.getMessage());
         }
-        return new Loan(BigDecimal.ZERO, 0);
+        return new Loan(BigDecimal.ZERO, BigDecimal.ZERO);
     }
 }

@@ -30,15 +30,14 @@ public class Interest {
 
     private Money sum;
 
-    private int days;
+    private BigDecimal days;
 
     static final Logger logger = Logger.getLogger(Interest.class);
 
     public static int FIRST_INTEREST_DAY = 1;
 
-    public final String NEGATIVE_SUM_VALUE_ERROR_MESSAGE = "Sum cannot be negative. Value: ";
+    public final String NEGATIVE_VALUE_ERROR_MESSAGE = "cannot be negative. Value: ";
 
-    public final String NEGATIVE_DAYS_ERROR_MESSAGE = "Days cannot be negative. Value: ";
 
     /**
      *  Formatted string for values
@@ -54,11 +53,9 @@ public class Interest {
      */
     public final String CALCULATED_VALUE = "<%s>: %s has been calculated";
 
-    public Interest(Money sum, int days) {
-        checkPositive(days);
-        checkPositive(sum.getAmount());
-        this.sum = sum;
-        this.days = days;
+    public Interest(Money sum, BigDecimal days) {
+        setSum(sum);
+        setDays(days);
 
     }
 
@@ -66,17 +63,17 @@ public class Interest {
         return sum;
     }
 
-    public int getDays() {
+    public BigDecimal getDays() {
         return days;
     }
 
-    public void setDays(int days) {
-        checkPositive(days);
+    public void setDays(BigDecimal days) {
+        checkPositive(days, "days");
         this.days = days;
     }
 
     public void setSum(Money sum) {
-        checkPositive(sum.getAmount());
+        checkPositive(sum.getAmount(),"sum");
         this.sum = sum;
     }
 
@@ -95,7 +92,7 @@ public class Interest {
 
     public Money getFinalInterest(){
         Money finalInterest = new Money();
-        for(int day = FIRST_INTEREST_DAY; day <= days ; day++){
+        for(BigDecimal day = new BigDecimal(FIRST_INTEREST_DAY); day.compareTo(days) <= 0 ; day = day.add(BigDecimal.ONE)){
            finalInterest = finalInterest.add(getAmountForDay(day));
         }
         logger.debug(String.format(CALCULATED_VALUE,"final_interest",finalInterest.getAmount()));
@@ -108,7 +105,7 @@ public class Interest {
        return finalInterest;
     }
 
-    private Money getAmountForDay(int day){
+    private Money getAmountForDay(BigDecimal day){
         return sum.getPercentAmount(getPercentForDay(day));
     }
     /**
@@ -116,7 +113,7 @@ public class Interest {
      * @param day - current day
      * @return - percentage
      */
-    private BigDecimal getPercentForDay(int day){
+    private BigDecimal getPercentForDay(BigDecimal day){
         boolean byThree = isDividable(day, 3);
         boolean byFive = isDividable(day, 5);
 
@@ -141,21 +138,14 @@ public class Interest {
      * @param divider - check against this
      * @return - checking result
      */
-    private boolean isDividable(int value, int divider){
-        return value % divider == 0;
+    private boolean isDividable(BigDecimal value, int divider){
+        return value.remainder(new BigDecimal(divider)).compareTo(BigDecimal.ZERO) == 0;
     }
 
-    private void checkPositive(int value){
-        if(value < 0){
-            logger.error(NEGATIVE_DAYS_ERROR_MESSAGE + value);
-            throw new IllegalArgumentException(NEGATIVE_DAYS_ERROR_MESSAGE + value);
-        }
-        logger.debug(String.format(VALUE, "days", value));
-    }
-    private void checkPositive(BigDecimal value){
+    private void checkPositive(BigDecimal value, String fieldName){
         if(value.compareTo(BigDecimal.ZERO) == -1 ){
-            logger.error(NEGATIVE_SUM_VALUE_ERROR_MESSAGE + value);
-            throw new IllegalArgumentException(NEGATIVE_SUM_VALUE_ERROR_MESSAGE + value);
+            logger.error(NEGATIVE_VALUE_ERROR_MESSAGE + value);
+            throw new IllegalArgumentException("<" + fieldName + "> "+ NEGATIVE_VALUE_ERROR_MESSAGE + value);
         }
         logger.debug(String.format(VALUE,"sum",value));
     }

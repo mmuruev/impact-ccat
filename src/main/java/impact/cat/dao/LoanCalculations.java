@@ -35,7 +35,7 @@ public class LoanCalculations extends Loan {
         );
     }
 
-    public LoanCalculations(BigDecimal sum, int days, BigDecimal interest, BigDecimal totalSum) {
+    public LoanCalculations(BigDecimal sum, BigDecimal days, BigDecimal interest, BigDecimal totalSum) {
         super(sum, days);
         this.interest = interest;
         this.totalSum = totalSum;

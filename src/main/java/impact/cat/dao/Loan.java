@@ -17,9 +17,9 @@ public class Loan {
 
     private BigDecimal sum;
 
-    private int days;
+    private BigDecimal days;
 
-    public Loan(BigDecimal sum, int days) {
+    public Loan(BigDecimal sum, BigDecimal days) {
         this.sum = sum;
         this.days = days;
     }
@@ -28,7 +28,7 @@ public class Loan {
         return sum;
     }
 
-    public int getDays() {
+    public BigDecimal getDays() {
         return days;
     }
 }
