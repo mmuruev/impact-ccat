@@ -79,4 +79,20 @@ public class InterestTest {
         interest = new Interest(new Money(new BigDecimal("123")), new BigDecimal(5));   // Incoming messages will look like following:{ sum: 123, days: 5 }
 
     }
+
+    /*
+    * Token	Time	Amount	Interest	Total amount
+rference	16	186	87.42	273.42
+reference	21	171	100.89	271.89
+reference	11	503	155.93	658.93
+reference	3	172	15.48	187.48
+reference	13	350	126	476
+reference	25286565	389	281978915.17	281979304.17
+reference	17	79	40.29	119.29
+reference	16	871	409.37	1280.37
+reference	29	407	337.81	744.81
+reference	27	460	345	805
+    *
+    *
+    * */
 }
