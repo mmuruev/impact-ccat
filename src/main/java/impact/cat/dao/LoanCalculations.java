@@ -56,4 +56,8 @@ public class LoanCalculations extends Loan {
     public String getToken() {
         return token;
     }
+
+    public String toString(){
+        return "<days>:" + getDays() + " " + "<sum>:" + getSum() + " " + "<totalSum>:" + getTotalSum() + " " + "<interest>:" + getInterest() + " " + "<token>:" + getToken();
+    }
 }

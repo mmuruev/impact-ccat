@@ -3,6 +3,7 @@ package impact.cat.rabbit;
 import impact.cat.dao.Loan;
 import impact.cat.queue.MyJarInterestQueue;
 import impact.cat.queue.MyJarSolvedInterestQueue;
+import impact.cat.rabbit.header.MyJarMessagePropertiesConverter;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -65,6 +66,7 @@ public class RabbitConfig {
     public RabbitTemplate rabbitTemplate() {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
         rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
+        rabbitTemplate.setMessagePropertiesConverter(new MyJarMessagePropertiesConverter());
         return rabbitTemplate ;
     }
 

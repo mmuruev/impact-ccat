@@ -73,7 +73,7 @@ public class Application implements CommandLineRunner {
         System.out.println("Press any key to exit");
         Scanner scanner = new Scanner(System.in);
         while(!scanner.hasNext()){
-            Thread.sleep(10000);
+            Thread.sleep(1000);
         }
         //RabbitTemplate rabbitTemplate = (RabbitTemplate) context.getBean("rabbitTemplate");
 
