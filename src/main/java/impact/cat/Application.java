@@ -8,6 +8,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.util.Scanner;
+
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 
@@ -68,14 +70,17 @@ public class Application implements CommandLineRunner {
 
         System.out.println("Waiting five seconds...");
         Thread.sleep(5000);
-        System.out.println("Sending message...");
+        System.out.println("Press any key to exit");
+        Scanner scanner = new Scanner(System.in);
+        while(!scanner.hasNext()){
+            Thread.sleep(10000);
+        }
+        //RabbitTemplate rabbitTemplate = (RabbitTemplate) context.getBean("rabbitTemplate");
 
-        RabbitTemplate rabbitTemplate = (RabbitTemplate) context.getBean("rabbitTemplate");
-
-        Object response = rabbitTemplate.receiveAndConvert(RabbitConfig.BROADCAST_INTEREST_QUEUE);
+       // Object response = rabbitTemplate.receiveAndConvert(RabbitConfig.BROADCAST_INTEREST_QUEUE);
        // String response = (String)rabbitTemplate.receiveAndConvert(RabbitConfig.BROADCAST_SOLVED_QUEUE);
-        System.out.print(response);
-        Thread.sleep(10000);
+       // System.out.print(response);
+
         context.close();
     }
 }
