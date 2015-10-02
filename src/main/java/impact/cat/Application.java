@@ -21,14 +21,14 @@ public class Application implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        System.out.println("Waiting five seconds...");
+        System.out.println("Running...");
         Thread.sleep(5000);
-        System.out.println("Press any key to exit");
+        System.out.println("Press any symbol to exit");
         Scanner scanner = new Scanner(System.in);
-        while(!scanner.hasNext()){
+        if(scanner.hasNext()){
+            System.out.println("Prepare to die... exit");
             Thread.sleep(100);
         }
-
         context.close();
     }
 }
