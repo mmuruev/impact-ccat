@@ -1,6 +1,5 @@
 package impact.cat.rabbit;
 
-import impact.cat.dao.Loan;
 import impact.cat.dao.LoanCalculations;
 
 /**
@@ -9,7 +8,7 @@ import impact.cat.dao.LoanCalculations;
  * Date: 20.09.15
  * Time: 12:56
  */
-public class PersistenceListener {
+public class CalculationsListener {
 
     public void receiveMessage(LoanCalculations message) {
          System.out.println("Persistence: Message Received <Days:" + message.getDays() + " Sum:"+ message.getSum()+">");

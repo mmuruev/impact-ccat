@@ -1,6 +1,5 @@
 package impact.cat.calculation.bag.type;
 
-import impact.cat.calculation.bag.type.Currency;
 
 /**
  * Created with IntelliJ IDEA.

@@ -1,6 +1,7 @@
 package impact.cat.rabbit;
 
 import impact.cat.dao.Loan;
+import impact.cat.dao.LoanCalculations;
 import impact.cat.queue.MyJarInterestQueue;
 import impact.cat.queue.MyJarSolvedInterestQueue;
 import impact.cat.rabbit.header.MyJarMessagePropertiesConverter;
@@ -86,25 +87,32 @@ public class RabbitConfig {
     }
 
     @Bean
-    SimpleMessageListenerContainer persistenceListenerContainer(ConnectionFactory connectionFactory,
-                                                                @Qualifier("persistenceListenerAdapter") MessageListenerAdapter listenerAdapter,
-                                                                MessageConverter messageConverter) {
+    SimpleMessageListenerContainer calculationsListenerContainer(ConnectionFactory connectionFactory,
+                                                                 @Qualifier("calculationsListenerAdapter") MessageListenerAdapter listenerAdapter,
+                                                                 MessageConverter messageConverter) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.setQueues(solvedQueue());
-        listenerAdapter.setMessageConverter(new Jackson2JsonMessageConverter());
+
+        DefaultClassMapper typeMapper = new DefaultClassMapper();
+        typeMapper.setDefaultType(LoanCalculations.class);
+
+        Jackson2JsonMessageConverter jsonMessageConverter = new Jackson2JsonMessageConverter();
+        jsonMessageConverter.setClassMapper(typeMapper);
+
+        listenerAdapter.setMessageConverter(jsonMessageConverter);
         container.setMessageListener(listenerAdapter);
         return container;
     }
 
     @Bean
-    MessageListenerAdapter persistenceListenerAdapter(PersistenceListener receiver) {
+    MessageListenerAdapter calculationsListenerAdapter(CalculationsListener receiver) {
         return new MessageListenerAdapter(receiver, "receiveMessage");
     }
 
     @Bean
-    SimpleMessageListenerContainer webAppListenerContainer(ConnectionFactory connectionFactory,
-                                                           @Qualifier("webAppListenerAdapter") MessageListenerAdapter listenerAdapter, MessageConverter messageConverter) {
+    SimpleMessageListenerContainer interestListenerContainer(ConnectionFactory connectionFactory,
+                                                             @Qualifier("interestListenerAdapter") MessageListenerAdapter listenerAdapter, MessageConverter messageConverter) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.setQueues(interestQueue());
@@ -114,18 +122,18 @@ public class RabbitConfig {
     }
 
     @Bean
-    MessageListenerAdapter webAppListenerAdapter(WebAppListener webAppListener) {
-        return new MessageListenerAdapter(webAppListener, "receiveMessage");
+    MessageListenerAdapter interestListenerAdapter(InterestListener interestListener) {
+        return new MessageListenerAdapter(interestListener, "receiveMessage");
     }
 
     @Bean
-    PersistenceListener persistenceListener() {
-        return new PersistenceListener();
+    CalculationsListener calculationsListener() {
+        return new CalculationsListener();
     }
 
     @Bean
-    WebAppListener webAppListener() {
-        return new WebAppListener();
+    InterestListener interestListener() {
+        return new InterestListener();
     }
 
 
@@ -142,13 +150,5 @@ public class RabbitConfig {
         jsonMessageConverter.setClassMapper(defaultClassMapper);
         return jsonMessageConverter;
     }
-
-    /*    @Bean
-    	public MessageConverter messageConverter(DefaultClassMapper defaultClassMapper){
-    		JsonMessageConverter jsonMessageConverter = new JsonMessageConverter();
-    		jsonMessageConverter.setClassMapper(defaultClassMapper);
-    		return jsonMessageConverter;
-    	}*/
-
 
 }

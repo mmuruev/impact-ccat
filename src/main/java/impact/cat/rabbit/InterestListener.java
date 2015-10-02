@@ -14,19 +14,19 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Date: 20.09.15
  * Time: 12:56
  */
-public class WebAppListener {
+public class InterestListener {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
     public void receiveMessage(Loan message) {
-        System.out.println("WebAppListener: Message Received <Days:" + message.getDays() + " Sum:" + message.getSum() + ">");
+        System.out.println("InterestListener: Message Received <Days:" + message.getDays() + " Sum:" + message.getSum() + ">");
 
         Interest interest = new Interest(new Money(message.getSum()), message.getDays());
 
         LoanCalculations loanCalculations = interest.getLoanCalculations();
         rabbitTemplate.convertAndSend(loanCalculations, new MyJarMessagePostProcessor());
-        System.out.println("WebAppListener: Message has been send " + loanCalculations.toString());
+        System.out.println("InterestListener: Message has been send " + loanCalculations.toString());
 
     }
 
