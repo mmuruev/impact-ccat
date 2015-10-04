@@ -1,5 +1,6 @@
 package impact.cat.rabbit.header;
 
+import impact.cat.rabbit.RabbitConfig;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageDeliveryMode;
@@ -14,6 +15,7 @@ public class MyJarMessagePostProcessor implements MessagePostProcessor {
     public Message postProcessMessage(Message message) throws AmqpException {
         MessageProperties properties = message.getMessageProperties();
         properties.getHeaders().remove("__TypeId__");
+        properties.setReceivedRoutingKey(RabbitConfig.BROADCAST_SOLVED_QUEUE);
         properties.setDeliveryMode(MessageDeliveryMode.NON_PERSISTENT);
         return new Message(message.getBody(), properties);
     }
